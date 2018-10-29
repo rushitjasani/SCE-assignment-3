@@ -167,8 +167,21 @@ def grep(args=[]):
     except :
         print "Error :("
 
-def sed():
-    pass
+def sed(args=[]):
+    try:
+        string_args = ' '.join(args)
+        string_args.strip
+        first_list = string_args.split('"')
+        pattern1 = first_list[1]
+        pattern2 = first_list[3]
+        first_list = first_list[5:]
+        mystring = first_list[:-1][0]
+        ls1 = mystring.split(pattern1)
+        final_ans = pattern2.join(ls1)
+        print final_ans
+        return
+    except :
+        print "Error :("
 
 def diff():
     pass
