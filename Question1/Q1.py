@@ -45,14 +45,18 @@ class Admin:
     def deleteProduct(self):
         del_id = int(raw_input("enter id of product to be deleted : "))
         l = []
-        with open("product", "rb") as file_obj:
-            while(True):
-                try:
-                    prod_obj = pickle.load(file_obj)
-                    if prod_obj.get_id() != del_id:
-                        l.append(prod_obj)
-                except EOFError:
-                    break
+        try:
+            with open("product", "rb") as file_obj:
+                while(True):
+                    try:
+                        prod_obj = pickle.load(file_obj)
+                        if prod_obj.get_id() != del_id:
+                            l.append(prod_obj)
+                    except EOFError:
+                        break
+        except:
+            return
+        
         with open("product", "wb") as file_obj:
             for i in l:
                 pickle.dump(i, file_obj)
@@ -64,18 +68,22 @@ class Admin:
         subgroup = raw_input("new subgroup of product : ")
         price = int(raw_input("new price of product : "))
         l = []
-        with open("product", "rb") as file_obj:
-            while(True):
-                try:
-                    prod_obj = pickle.load(file_obj)
-                    if prod_obj.get_id() == change_id:
-                        prod_obj.set_name(name)
-                        prod_obj.set_group(group)
-                        prod_obj.set_subgroup(subgroup)
-                        prod_obj.set_price(price)
-                    l.append(prod_obj)
-                except EOFError:
-                    break
+        try:
+            with open("product", "rb") as file_obj:
+                while(True):
+                    try:
+                        prod_obj = pickle.load(file_obj)
+                        if prod_obj.get_id() == change_id:
+                            prod_obj.set_name(name)
+                            prod_obj.set_group(group)
+                            prod_obj.set_subgroup(subgroup)
+                            prod_obj.set_price(price)
+                        l.append(prod_obj)
+                    except EOFError:
+                        break
+        except:
+            return
+        
         with open("product", "wb") as file_obj:
             for i in l:
                 pickle.dump(i, file_obj)
@@ -161,31 +169,37 @@ class Customer:
         old_c = None
         cart = None
         l = []
-        with open("cart", "rb") as file_obj:
-            while(True):
-                try:
-                    cart_obj = pickle.load(file_obj)
-                    if cart_obj.get_id() != self.get_id():
-                        l.append(cart_obj)
-                    else:
-                        old_c = cart_obj
-                except EOFError:
-                    break
+        try:
+            with open("cart", "rb") as file_obj:
+                while(True):
+                    try:
+                        cart_obj = pickle.load(file_obj)
+                        if cart_obj.get_id() != self.get_id():
+                            l.append(cart_obj)
+                        else:
+                            old_c = cart_obj
+                    except EOFError:
+                        break
+        except:
+            return
 
         if old_c is None:
             print "Empty cart"
             return
         else:
             all_prod = []
-            with open("product", "rb") as file_obj:
-                while(True):
-                    try:
-                        prod_obj = pickle.load(file_obj)
-                        all_prod += [prod_obj.get_id()]
-                    except EOFError:
-                        prod = None
-                        break
-
+            try:
+                with open("product", "rb") as file_obj:
+                    while(True):
+                        try:
+                            prod_obj = pickle.load(file_obj)
+                            all_prod += [prod_obj.get_id()]
+                        except EOFError:
+                            prod = None
+                            break
+            except:
+                pass
+            
             bought_prod = old_c.get_products()
 
             available = [x for x in bought_prod if x.get_id() in all_prod]
@@ -238,16 +252,20 @@ class Customer:
     def addToCart(self):
         prod_id = int(raw_input("Enter product id : "))
         prod = None
-        with open("product", "rb") as file_obj:
-            while(True):
-                try:
-                    prod_obj = pickle.load(file_obj)
-                    if prod_id == prod_obj.get_id():
-                        prod = prod_obj
+        try:
+            with open("product", "rb") as file_obj:
+                while(True):
+                    try:
+                        prod_obj = pickle.load(file_obj)
+                        if prod_id == prod_obj.get_id():
+                            prod = prod_obj
+                            break
+                    except EOFError:
+                        prod = None
                         break
-                except EOFError:
-                    prod = None
-                    break
+        except:
+            return
+        
 
         if prod is None:
             print "No item with id " + str(prod_id) + " exists :("
@@ -287,17 +305,21 @@ class Customer:
         prod_id = int(raw_input("Enter product id : "))
         old_c = None
         l = []
-        with open("cart", "rb") as file_obj:
-            while(True):
-                try:
-                    cart_obj = pickle.load(file_obj)
-                    if cart_obj.get_id() != self.get_id():
-                        l.append(cart_obj)
-                    else:
-                        old_c = cart_obj
-                except EOFError:
-                    break
-        remove_prod = None
+        try:
+            with open("cart", "rb") as file_obj:
+                while(True):
+                    try:
+                        cart_obj = pickle.load(file_obj)
+                        if cart_obj.get_id() != self.get_id():
+                            l.append(cart_obj)
+                        else:
+                            old_c = cart_obj
+                    except EOFError:
+                        break
+            remove_prod = None
+        except:
+            return
+            
         if old_c is None:
             print "Empty cart"
             return
@@ -326,14 +348,18 @@ class Customer:
     def viewCart(self):
         old_c = None
         l = []
-        with open("cart", "rb") as file_obj:
-            while(True):
-                try:
-                    cart_obj = pickle.load(file_obj)
-                    if cart_obj.get_id() == self.get_id():
-                        old_c = cart_obj
-                except EOFError:
-                    break
+        try:
+            with open("cart", "rb") as file_obj:
+                while(True):
+                    try:
+                        cart_obj = pickle.load(file_obj)
+                        if cart_obj.get_id() == self.get_id():
+                            old_c = cart_obj
+                    except EOFError:
+                        break
+        except:
+            print "Empty cart"
+            return
 
         if old_c is not None:
             print "###### CART ######"
@@ -489,45 +515,45 @@ admin = Admin("rushit")
 
 def admin_mode():
     while(True):
-        # try:
-        print "1 for view product"
-        print "2 for add product"
-        print "3 for delete product"
-        print "4 for modify product"
-        print "5 for make shipments"
-        print "6 for confirm delivery"
-        print "7 for exit"
-        choice = int(raw_input())
-        if choice == 1:
-            print
-            admin.viewProducts()
-            print
-        elif choice == 2:
-            print
-            admin.addProduct()
-            print
-        elif choice == 3:
-            print
-            admin.deleteProduct()
-            print
-        elif choice == 4:
-            print
-            admin.modifyProduct()
-            print
-        elif choice == 5:
-            print
-            admin.makeShipment()
-            print
-        elif choice == 6:
-            print
-            admin.confirmdelivery()
-            print
-        elif choice == 7:
+        try:
+            print "1 for view product"
+            print "2 for add product"
+            print "3 for delete product"
+            print "4 for modify product"
+            print "5 for make shipments"
+            print "6 for confirm delivery"
+            print "7 for exit"
+            choice = int(raw_input())
+            if choice == 1:
+                print
+                admin.viewProducts()
+                print
+            elif choice == 2:
+                print
+                admin.addProduct()
+                print
+            elif choice == 3:
+                print
+                admin.deleteProduct()
+                print
+            elif choice == 4:
+                print
+                admin.modifyProduct()
+                print
+            elif choice == 5:
+                print
+                admin.makeShipment()
+                print
+            elif choice == 6:
+                print
+                admin.confirmdelivery()
+                print
+            elif choice == 7:
+                return
+        except KeyboardInterrupt:
             return
-        # except KeyboardInterrupt:
-        #     return
-        # except:
-        #     continue
+        except:
+            continue
 
 
 def customer_mode():
@@ -537,17 +563,20 @@ def customer_mode():
     # phone = 8866324686
     auth = False
     customer = None
-    with open("user","rb") as file_obj:
-        while True:
-            try:
-                obj = pickle.load(file_obj)
-                if obj.get_name() == uname and obj.get_phNo() == phone:
-                    auth = True
-                    customer = obj
+    try:
+        with open("user","rb") as file_obj:
+            while True:
+                try:
+                    obj = pickle.load(file_obj)
+                    if obj.get_name() == uname and obj.get_phNo() == phone:
+                        auth = True
+                        customer = obj
+                        break
+                except EOFError:
                     break
-            except EOFError:
-                break
-
+    except:
+        pass
+    
     if auth == False:
         print "Please Register first."
         return
